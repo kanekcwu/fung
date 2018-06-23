@@ -1,10 +1,12 @@
 #-----------------------------------------------------------------------------#
 # Obtain realtime/historical weather data from open data and extract insight
+# Explore holidy/weekend as well
 #-----------------------------------------------------------------------------#
 
 library(tidyverse)
 library(rvest)
 library(httr)
+library(lubridate)
 
 # Utility functions to obtain historical weather data from open data source----
 get_weather_dt <- function(date, time) {
@@ -54,10 +56,22 @@ trans_sum <- trans %>%
   ungroup() %>%
   inner_join(april_weather, by = c("Date" = "date"))
 
+# Holiday or weekends
+trans_sum <- trans_sum %>%
+  mutate(holiday_weekend = weekdays(Date) %in% c("Saturday", "Sunday") |
+           Date %in% as.Date("2018-04-05"),
+         holiday_weekend = as.numeric(holiday_weekend))
+
+# Possible pay day
+trans_sum <- trans_sum %>%
+  mutate(payday = Date >= "2018-04-25" | Date <= "2018-04-05")
+
 # Correlation metric between category and temperare and humidity
 cors <- list(
   temp = c(),
-  hum = c()
+  hum = c(),
+  holiday_weekend = c(),
+  payday = c()
 )
 
 for (d in unique(trans_sum$Cat)) {
@@ -65,16 +79,24 @@ for (d in unique(trans_sum$Cat)) {
   dt <- trans_sum %>% filter(Cat == d)
   # Temperature
   fit <- lm(n~temp, data = dt)
-  cors$temp[d] <- summary(fit)$fstatistic[["value"]]
+  cors$temp[d] <- summary(fit)$coefficients[2, 3]
   # Humidity
   fit <- lm(n~hum, data = dt)
-  cors$hum[d] <- summary(fit)$fstatistic[["value"]]
+  cors$hum[d] <- summary(fit)$coefficients[2, 3]
+  # Holiday weekend
+  fit <- lm(n~holiday_weekend, data = dt)
+  cors$holiday_weekend[d] <- summary(fit)$coefficients[2, 3]
+  # Payday
+  fit <- lm(n~payday, data = dt)
+  cors$payday[d] <- summary(fit)$coefficients[2, 3]
 }
 
 # Top correlations with temperature
-sort(cors$temp[cors$temp > 5], decreasing = TRUE)
+sort(cors$temp[abs(cors$temp) > 3], decreasing = TRUE)
 
-sort(cors$hum[cors$hum > 5], decreasing = TRUE)
+sort(cors$hum[abs(cors$hum) > 3], decreasing = TRUE)
 
+sort(cors$holiday_weekend[abs(cors$holiday_weekend) > 3], decreasing = TRUE)
 
+sort(cors$payday[abs(cors$payday) > 3], decreasing = TRUE)
 
