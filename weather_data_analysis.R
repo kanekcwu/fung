@@ -100,3 +100,14 @@ sort(cors$holiday_weekend[abs(cors$holiday_weekend) > 3], decreasing = TRUE)
 
 sort(cors$payday[abs(cors$payday) > 3], decreasing = TRUE)
 
+# Make example chart of correlation for cooling drinks-------------------------
+cd <- trans_sum %>% filter(Cat == "Cooling Drink")
+ggplot(cd, aes(temp, n)) +
+  geom_point() + geom_smooth() +
+  theme_bw(14) +
+  xlab("Temperature") +
+  ylab("Daily Cooling Drink Sales")
+
+
+
+

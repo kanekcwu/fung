@@ -31,7 +31,7 @@ ids <- c(
 # Get trends as of April 30
 data <- list()
 for (id in names(ids)) {
-  data[[id]] <- gtrends_category(ids[id], "2018-04-16")
+  data[[id]] <- gtrends_category(ids[id], "2018-06-24")
 }
 
 trending_topics <- list()
