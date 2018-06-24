@@ -1,6 +1,6 @@
 dashboardPage(
   dashboardHeader(
-    title = "Micro Moment Maker"
+    title = img(src = "logo.png", height = "60px")
   ),
   dashboardSidebar(disable = TRUE),
   dashboardBody(
@@ -33,6 +33,7 @@ dashboardPage(
         )
       )
     )
-  )
+  ),
+  title = "Micro Moment Maker"
 )
 

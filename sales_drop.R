@@ -23,6 +23,7 @@ trans_sum <- trans_sum %>%
 
 drop_product <- trans_sum %>%
   mutate(drop = (p2 - p1) / p1) %>%
-  filter(drop <= -0.5, p1 >= 100)
-  
+  filter(drop <= -0.5, p1 >= 600)
+
+save(drop_product, file = "micro_moment_maker/drop_product.rda")  
   
