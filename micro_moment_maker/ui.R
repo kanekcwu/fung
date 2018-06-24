@@ -1,6 +1,6 @@
 dashboardPage(
   dashboardHeader(
-    title = img(src = "logo.png", height = "60px")
+    title = img(src = "logo.png", height = "45px")
   ),
   dashboardSidebar(disable = TRUE),
   dashboardBody(
@@ -16,7 +16,8 @@ dashboardPage(
           status = "primary", width = 12
         ),
         box(
-          title = "Sales Drop",
+          title = img(src = "sales_drop.jpg", "Product Sales Warning", width = "40px"),
+          dataTableOutput("product_drop"),
           status = "warning", width = 12
         )
       ),
@@ -24,7 +25,7 @@ dashboardPage(
         6,
         box(
           lapply(trending, function(x)
-            tags$span(x, class = "badge bg-red", style = "font-size:24px;padding:5px")),
+            tags$span(x, class = "badge bg-red", style = "font-size:16px;padding:5px")),
           br(),
           br(),
           dataTableOutput("trending"),
